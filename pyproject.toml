@@ -1,0 +1,47 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "streamlit-d3-network"
+version = "0.1.0"
+description = "Interactive D3.js network graph component for Streamlit with zone-clustered force layout, bidirectional state, and agent integration."
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.10"
+authors = [
+    { name = "Quentin" },
+]
+keywords = [
+    "streamlit",
+    "d3",
+    "network",
+    "graph",
+    "visualization",
+    "force-directed",
+    "component",
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Scientific/Engineering :: Visualization",
+]
+dependencies = [
+    "streamlit>=1.51.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/quentin/streamlit-d3-network"
+Repository = "https://github.com/quentin/streamlit-d3-network"
+Issues = "https://github.com/quentin/streamlit-d3-network/issues"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+streamlit_d3_network = ["frontend/**/*"]
