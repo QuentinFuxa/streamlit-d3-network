@@ -10,11 +10,15 @@ Build rich, explorable network visualizations with zone clustering, multiple nod
 
 **[Try the live demo](https://d3-network.streamlit.app/)**
 
-![Architecture view](assets/architecture.png)
-
-![Attention sink — hierarchical layout](assets/attention-sink.png)
-
-![READ/WRITE timeline](assets/timeline.png)
+<p align="center">
+<img src="assets/architecture.png" alt="Architecture view" width="600">
+</p>
+<p align="center">
+<img src="assets/attention-sink.png" alt="Attention sink — hierarchical layout" width="600">
+</p>
+<p align="center">
+<img src="assets/timeline.png" alt="READ/WRITE timeline" width="600">
+</p>
 
 ## Installation
 
@@ -43,7 +47,8 @@ if result and result.get("selected_node"):
     st.json(result["selected_node"])
 ```
 
-## Features
+<details>
+<summary><h2>Features</h2></summary>
 
 ### Graph rendering
 - **Force-directed layout** with D3.js v7 — smooth, physics-based node positioning
@@ -100,6 +105,8 @@ if result and result.get("selected_node"):
 - **Python to JS** — highlight nodes, zoom to node, filter by zone/type
 - **JS to Python** — selected node, triggered action, node positions, zoom transform
 - **Persistent layout** — node positions and zoom state survive Streamlit rerenders
+
+</details>
 
 ## API reference
 
