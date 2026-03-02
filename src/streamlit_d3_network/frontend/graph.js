@@ -293,6 +293,7 @@ export default function (component) {
   const showLabels = opts.showLabels !== false;
   const showHulls = opts.showHulls !== false;
   const showLegend = opts.showLegend !== false;
+  const legendCollapsed = opts.legendCollapsed === true;
   const showSearch = opts.showSearch !== false;
   const showExport = opts.showExport === true;
   const showParticles = opts.showParticles !== false;
@@ -1228,6 +1229,10 @@ export default function (component) {
       root.appendChild(legendToggle);
 
       // Close button inside legend
+      const legendClose = document.createElement("button");
+      legendClose.className = "sd3n-legend-close";
+      legendClose.innerHTML = "&times;";
+      legend.insertBefore(legendClose, legend.firstChild);
 
       // Adjust top position when toolbar is hidden
       if (!showToolbar) {
@@ -1253,6 +1258,7 @@ export default function (component) {
 
       // Toggle legend
       legendToggle.addEventListener("click", expandLegend);
+      legendClose.addEventListener("click", collapseLegend);
 
       // Legend click-to-filter
       let activeFilter = null;

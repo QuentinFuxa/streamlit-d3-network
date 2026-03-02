@@ -226,6 +226,22 @@
 .sd3n-legend-toggle:hover {
   color: var(--sd3n-text);
 }
+.sd3n-legend-close {
+  position: absolute;
+  top: 4px;
+  right: 6px;
+  border: none;
+  background: none;
+  font-size: 14px;
+  line-height: 1;
+  cursor: pointer;
+  color: var(--sd3n-text-muted);
+  padding: 2px 4px;
+  transition: color var(--sd3n-transition);
+}
+.sd3n-legend-close:hover {
+  color: var(--sd3n-text);
+}
 .sd3n-lg-title {
   font-weight: 600;
   font-size: 0.6875rem;
