@@ -50,6 +50,7 @@ def st_d3_network(
     layout: str = "force",
     theme: dict[str, str] | None = None,
     compact: bool = False,
+    lang: str = "",
     height: int = 600,
     key: str | None = None,
 ) -> dict[str, Any] | None:
@@ -98,6 +99,7 @@ def st_d3_network(
             "showLabels": show_labels,
             "showHulls": show_hulls,
             "showLegend": show_legend,
+            "legendCollapsed": compact,
             "showSearch": show_search if not compact else False,
             "showExport": show_export if not compact else False,
             "showParticles": show_particles,
@@ -106,6 +108,7 @@ def st_d3_network(
             "showMinimap": show_minimap if not compact else False,
             "layout": layout,
             "theme": theme or {},
+            "lang": lang or ("fr" if compact else ""),
         },
         highlight=highlight or [],
         zoom_to=zoom_to,

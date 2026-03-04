@@ -303,6 +303,48 @@ export default function (component) {
   const nodeTypes = data.node_types || {};
   const actions = data.actions || {};
 
+  // i18n
+  const _FR = {
+    noData: "Aucune donnée", legend: "Légende", zones: "Zones", types: "Types",
+    search: "Rechercher\u2026", nodes: "nœuds", edges: "arêtes", selected: "sélectionnés",
+    connected: "Connexions", data: "Données", edge: "Arête", label: "Libellé",
+    width: "Épaisseur", style: "Style", dashed: "Pointillé",
+    sharedNeighbors: "Voisins communs", shortestPath: "Plus court chemin",
+    hop: "saut", hops: "sauts", graphSummary: "Résumé du graphe",
+    networkStats: "Statistiques réseau", components: "Composantes",
+    avgDegree: "Degré moyen", maxDegree: "Degré max", density: "Densité",
+    diameter: "Diamètre", isolated: "Isolés", avgClustering: "Clustering moyen",
+    degreeDistribution: "Distribution des degrés", zoneBreakdown: "Répartition par zone",
+    nodesSelected: "nœuds sélectionnés", shiftClick: "Shift+clic pour ajouter/retirer",
+    typeBreakdown: "Répartition par type", internalLinks: "liens internes",
+    internalLink: "lien interne", externalConnections: "connexions externes",
+    externalConnection: "connexion externe", lassoSelection: "Sélection lasso",
+    scaleByDegree: "Taille par degré", resetScale: "Réinitialiser taille",
+    result: "résultat", results: "résultats",
+    noPathFound: "Aucun chemin trouvé", exportJson: "Exporter en JSON",
+    graphStats: "Statistiques du graphe",
+  };
+  const _EN = {
+    noData: "No data", legend: "Legend", zones: "Zones", types: "Types",
+    search: "Search\u2026", nodes: "nodes", edges: "edges", selected: "selected",
+    connected: "Connected", data: "Data", edge: "Edge", label: "Label",
+    width: "Width", style: "Style", dashed: "Dashed",
+    sharedNeighbors: "Shared neighbors", shortestPath: "Shortest path",
+    hop: "hop", hops: "hops", graphSummary: "Graph Summary",
+    networkStats: "Network statistics", components: "Components",
+    avgDegree: "Avg degree", maxDegree: "Max degree", density: "Density",
+    diameter: "Diameter", isolated: "Isolated", avgClustering: "Avg clustering",
+    degreeDistribution: "Degree distribution", zoneBreakdown: "Zone breakdown",
+    nodesSelected: "nodes selected", shiftClick: "Shift+click to add/remove",
+    typeBreakdown: "Type breakdown", internalLinks: "internal links",
+    internalLink: "internal link", externalConnections: "external connections",
+    externalConnection: "external connection", lassoSelection: "Lasso selection",
+    scaleByDegree: "Scale nodes by degree", resetScale: "Reset",
+    result: "result", results: "results",
+    noPathFound: "No path found", exportJson: "Export as JSON",
+    graphStats: "Graph statistics",
+  };
+  const t = (opts.lang === "fr") ? _FR : _EN;
 
   // Restore persisted state
   const savedPositions = data._state?.node_positions || {};
@@ -384,7 +426,7 @@ export default function (component) {
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="color:var(--sd3n-text-muted);flex-shrink:0">
           <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
         </svg>
-        <input class="sd3n-search-input" type="text" placeholder="Search\u2026">
+        <input class="sd3n-search-input" type="text" placeholder="${t.search}">
         <span class="sd3n-search-info"></span>
       `;
       if (showExport) {
@@ -396,7 +438,7 @@ export default function (component) {
       root.appendChild(searchBox);
       searchInput = searchBox.querySelector(".sd3n-search-input");
       searchInfo = searchBox.querySelector(".sd3n-search-info");
-      if (searchInfo) searchInfo.textContent = data.nodes.length + " nodes";
+      if (searchInfo) searchInfo.textContent = data.nodes.length + " " + t.nodes;
     }
 
     // Toolbar (top-right) — hidden in compact mode
@@ -956,12 +998,12 @@ export default function (component) {
         const tLabel = t?.label || d.target;
         let panelHtml = `<button class="sd3n-info-close">&times;</button>`;
         panelHtml += `<div class="sd3n-info-title">${sLabel} \u2192 ${tLabel}</div>`;
-        panelHtml += `<div class="sd3n-info-subtitle">Edge</div>`;
-        if (d.label) panelHtml += `<div class="sd3n-info-row"><span class="sd3n-info-label">Label</span><span class="sd3n-info-value">${d.label}</span></div>`;
-        panelHtml += `<div class="sd3n-info-row"><span class="sd3n-info-label">Width</span><span class="sd3n-info-value">${d.width || 1.5}px</span></div>`;
-        if (d.dashed) panelHtml += `<div class="sd3n-info-row"><span class="sd3n-info-label">Style</span><span class="sd3n-info-value">Dashed</span></div>`;
+        panelHtml += `<div class="sd3n-info-subtitle">${t.edge}</div>`;
+        if (d.label) panelHtml += `<div class="sd3n-info-row"><span class="sd3n-info-label">${t.label}</span><span class="sd3n-info-value">${d.label}</span></div>`;
+        panelHtml += `<div class="sd3n-info-row"><span class="sd3n-info-label">${t.width}</span><span class="sd3n-info-value">${d.width || 1.5}px</span></div>`;
+        if (d.dashed) panelHtml += `<div class="sd3n-info-row"><span class="sd3n-info-label">${t.style}</span><span class="sd3n-info-value">${t.dashed}</span></div>`;
         if (d.data && Object.keys(d.data).length > 0) {
-          panelHtml += `<div class="sd3n-info-data"><div class="sd3n-info-data-title">Data</div>`;
+          panelHtml += `<div class="sd3n-info-data"><div class="sd3n-info-data-title">${t.data}</div>`;
           Object.entries(d.data).forEach(([k, v]) => {
             const val = typeof v === "object" ? JSON.stringify(v) : String(v);
             panelHtml += `<div class="sd3n-info-row"><span class="sd3n-info-label">${k}</span><span class="sd3n-info-value">${val}</span></div>`;
@@ -972,7 +1014,7 @@ export default function (component) {
         if (s && t && adj[s.id] && adj[t.id]) {
           const shared = [...adj[s.id]].filter((n) => adj[t.id].has(n));
           if (shared.length > 0) {
-            panelHtml += `<div class="sd3n-info-data"><div class="sd3n-info-data-title">Shared neighbors</div>`;
+            panelHtml += `<div class="sd3n-info-data"><div class="sd3n-info-data-title">${t.sharedNeighbors}</div>`;
             shared.forEach((id) => {
               const n = nodeMap[id];
               if (n) panelHtml += `<div class="sd3n-info-row"><span class="sd3n-info-label" style="cursor:pointer;text-decoration:underline dotted" data-goto="${id}">${n.label}</span></div>`;
@@ -1184,7 +1226,7 @@ export default function (component) {
       let html = "";
 
       if (zones.length > 0) {
-        html += `<div class="sd3n-lg-title">Zones</div>`;
+        html += `<div class="sd3n-lg-title">${t.zones}</div>`;
         zones.forEach((z) => {
           const count = nodes.filter((n) => n.zone === z.name).length;
           html += `<div class="sd3n-lg-item" data-filter-type="zone" data-filter-value="${z.name}">
@@ -1194,7 +1236,7 @@ export default function (component) {
 
       const typeEntries = Object.entries(nodeTypes);
       if (typeEntries.length > 0) {
-        html += `<div class="sd3n-lg-title">Types</div>`;
+        html += `<div class="sd3n-lg-title">${t.types}</div>`;
         typeEntries.forEach(([key, cfg]) => {
           const count = nodes.filter((n) => n.type === key).length;
           const shape = cfg.shape || "circle";
@@ -1225,7 +1267,7 @@ export default function (component) {
       // Legend toggle button
       const legendToggle = document.createElement("button");
       legendToggle.className = "sd3n-legend-toggle";
-      legendToggle.textContent = "Legend";
+      legendToggle.textContent = t.legend;
       root.appendChild(legendToggle);
 
       // Close button inside legend
@@ -1799,7 +1841,7 @@ export default function (component) {
 
       // Node data (arbitrary key-value pairs)
       if (d.data && Object.keys(d.data).length > 0) {
-        panelHtml += `<div class="sd3n-info-data"><div class="sd3n-info-data-title">Data</div>`;
+        panelHtml += `<div class="sd3n-info-data"><div class="sd3n-info-data-title">${t.data}</div>`;
         Object.entries(d.data).forEach(([k, v]) => {
           const val = typeof v === "object" ? JSON.stringify(v) : String(v);
           panelHtml += `<div class="sd3n-info-row"><span class="sd3n-info-label">${k}</span><span class="sd3n-info-value">${val}</span></div>`;
@@ -1811,7 +1853,7 @@ export default function (component) {
       const connected = [...(adj[d.id] || [])].map((id) => nodeMap[id]).filter(Boolean);
       if (connected.length > 0) {
         panelHtml += `<div class="sd3n-info-row" style="margin-top:4px;align-items:center">
-          <span class="sd3n-info-label" style="font-weight:600">Connected (${connected.length})</span>
+          <span class="sd3n-info-label" style="font-weight:600">${t.connected} (${connected.length})</span>
           <span style="display:flex;gap:2px">
             <button class="sd3n-btn sd3n-depth-btn" data-depth="1" style="padding:1px 6px;font-size:0.625rem;${_neighborDepth === 1 ? "background:var(--sd3n-accent);color:#fff;border-color:var(--sd3n-accent)" : ""}">1</button>
             <button class="sd3n-btn sd3n-depth-btn" data-depth="2" style="padding:1px 6px;font-size:0.625rem;${_neighborDepth === 2 ? "background:var(--sd3n-accent);color:#fff;border-color:var(--sd3n-accent)" : ""}">2</button>
@@ -1954,12 +1996,12 @@ export default function (component) {
               return true;
             });
             linkLabelSel.classed("dimmed", true);
-            showToast(`Shortest path: ${path.length - 1} hop${path.length > 2 ? "s" : ""}`);
+            showToast(`${t.shortestPath}: ${path.length - 1} ${path.length > 2 ? t.hops : t.hop}`);
             animatePathParticle(path);
             // Show path info
             let panelHtml = `<button class="sd3n-info-close">&times;</button>`;
-            panelHtml += `<div class="sd3n-info-title">Shortest path</div>`;
-            panelHtml += `<div class="sd3n-info-subtitle">${path.length - 1} hop${path.length > 2 ? "s" : ""}</div>`;
+            panelHtml += `<div class="sd3n-info-title">${t.shortestPath}</div>`;
+            panelHtml += `<div class="sd3n-info-subtitle">${path.length - 1} ${path.length > 2 ? t.hops : t.hop}</div>`;
             path.forEach((id, i) => {
               const n = nodeMap[id];
               if (!n) return;
@@ -1980,7 +2022,7 @@ export default function (component) {
               });
             });
           } else {
-            showToast("No path found");
+            showToast(t.noPathFound);
           }
           _pathModeStart = null;
           return;
@@ -2021,8 +2063,8 @@ export default function (component) {
         const selNodes = [...selectedIds].map((id) => nodeMap[id]).filter(Boolean);
         // Show multi-select summary in info panel
         let panelHtml = `<button class="sd3n-info-close">&times;</button>`;
-        panelHtml += `<div class="sd3n-info-title">${selNodes.length} nodes selected</div>`;
-        panelHtml += `<div class="sd3n-info-subtitle">Shift+click to add/remove</div>`;
+        panelHtml += `<div class="sd3n-info-title">${selNodes.length} ${t.nodesSelected}</div>`;
+        panelHtml += `<div class="sd3n-info-subtitle">${t.shiftClick}</div>`;
         selNodes.forEach((n) => {
           panelHtml += `<div class="sd3n-info-row"><span class="sd3n-info-label" style="cursor:pointer" data-goto="${n.id}">${n.label}</span><span class="sd3n-info-value" style="font-size:0.6875rem;opacity:0.5">${n.type}</span></div>`;
         });
@@ -2030,7 +2072,7 @@ export default function (component) {
         const typeCounts = {};
         selNodes.forEach((n) => { typeCounts[n.type] = (typeCounts[n.type] || 0) + 1; });
         if (Object.keys(typeCounts).length > 1) {
-          panelHtml += `<div class="sd3n-info-data"><div class="sd3n-info-data-title">Type breakdown</div>`;
+          panelHtml += `<div class="sd3n-info-data"><div class="sd3n-info-data-title">${t.typeBreakdown}</div>`;
           Object.entries(typeCounts).sort((a, b) => b[1] - a[1]).forEach(([type, count]) => {
             const tc = nodeTypes[type] || {};
             panelHtml += `<div class="sd3n-info-row"><span class="sd3n-info-label">${tc.label || type}</span><span class="sd3n-info-value">${count}</span></div>`;
@@ -2041,7 +2083,7 @@ export default function (component) {
         const selZoneCounts = {};
         selNodes.forEach((n) => { if (n.zone) selZoneCounts[n.zone] = (selZoneCounts[n.zone] || 0) + 1; });
         if (Object.keys(selZoneCounts).length > 1) {
-          panelHtml += `<div class="sd3n-info-data"><div class="sd3n-info-data-title">Zone breakdown</div>`;
+          panelHtml += `<div class="sd3n-info-data"><div class="sd3n-info-data-title">${t.zoneBreakdown}</div>`;
           Object.entries(selZoneCounts).sort((a, b) => b[1] - a[1]).forEach(([zone, count]) => {
             panelHtml += `<div class="sd3n-info-row"><span class="sd3n-info-label">${zoneLabelMap[zone] || zone}</span><span class="sd3n-info-value">${count}</span></div>`;
           });
@@ -2054,7 +2096,7 @@ export default function (component) {
           return selectedIds.has(s) && selectedIds.has(t);
         });
         if (sharedLinks.length > 0) {
-          panelHtml += `<div class="sd3n-info-row" style="margin-top:6px"><span class="sd3n-info-label" style="font-weight:600">${sharedLinks.length} internal link${sharedLinks.length > 1 ? "s" : ""}</span></div>`;
+          panelHtml += `<div class="sd3n-info-row" style="margin-top:6px"><span class="sd3n-info-label" style="font-weight:600">${sharedLinks.length} ${sharedLinks.length > 1 ? t.internalLinks : t.internalLink}</span></div>`;
         }
         // External connections count
         let externalCount = 0;
@@ -2064,7 +2106,7 @@ export default function (component) {
           });
         });
         if (externalCount > 0) {
-          panelHtml += `<div class="sd3n-info-row"><span class="sd3n-info-label" style="opacity:0.6">${externalCount} external connection${externalCount > 1 ? "s" : ""}</span></div>`;
+          panelHtml += `<div class="sd3n-info-row"><span class="sd3n-info-label" style="opacity:0.6">${externalCount} ${externalCount > 1 ? t.externalConnections : t.externalConnection}</span></div>`;
         }
         infoPanel.innerHTML = panelHtml;
         infoPanel.classList.add("visible");
@@ -2149,7 +2191,7 @@ export default function (component) {
         mIdx = 0;
         if (!q) {
           clearHighlight();
-          if (searchInfo) searchInfo.textContent = nodes.length + " nodes";
+          if (searchInfo) searchInfo.textContent = nodes.length + " " + t.nodes;
           searchDropdown.style.display = "none";
           return;
         }
@@ -2165,7 +2207,7 @@ export default function (component) {
           return !ids.has(s) && !ids.has(t);
         });
         linkLabelSel.classed("dimmed", true);
-        if (searchInfo) searchInfo.textContent = matches.length + " result" + (matches.length !== 1 ? "s" : "");
+        if (searchInfo) searchInfo.textContent = matches.length + " " + (matches.length !== 1 ? t.results : t.result);
 
         // Show dropdown with top matches
         if (matches.length > 0 && matches.length <= 12) {
@@ -3570,7 +3612,7 @@ export default function (component) {
     if (!showStats) statsBar.style.display = "none";
     const nZonesUsed = new Set(nodes.map(n => n.zone).filter(Boolean)).size;
     const nTypes = new Set(nodes.map(n => n.type).filter(Boolean)).size;
-    statsBar.innerHTML = `<span>${nodes.length} nodes</span><span>${links.length} edges</span>${nZonesUsed ? `<span>${nZonesUsed} zones</span>` : ""}${nTypes ? `<span>${nTypes} types</span>` : ""}<span class="sd3n-sel-count" style="display:none"></span><span class="sd3n-zoom-level">100%</span>`;
+    statsBar.innerHTML = `<span>${nodes.length} ${t.nodes}</span><span>${links.length} ${t.edges}</span>${nZonesUsed ? `<span>${nZonesUsed} ${t.zones.toLowerCase()}</span>` : ""}${nTypes ? `<span>${nTypes} ${t.types.toLowerCase()}</span>` : ""}<span class="sd3n-sel-count" style="display:none"></span><span class="sd3n-zoom-level">100%</span>`;
     statsBar.style.pointerEvents = "auto";
     statsBar.style.cursor = "pointer";
     root.appendChild(statsBar);
@@ -3581,7 +3623,7 @@ export default function (component) {
       if (!selCountSpan) return;
       const count = selectedIds.size + (selectedId && !selectedIds.has(selectedId) ? 1 : 0);
       if (count > 0) {
-        selCountSpan.textContent = `${count} selected`;
+        selCountSpan.textContent = `${count} ${t.selected}`;
         selCountSpan.style.display = "";
         selCountSpan.style.color = "var(--sd3n-accent)";
         selCountSpan.style.fontWeight = "600";
@@ -3646,21 +3688,21 @@ export default function (component) {
       }
 
       let panelHtml = `<button class="sd3n-info-close">&times;</button>`;
-      panelHtml += `<div class="sd3n-info-title">Graph Summary</div>`;
-      panelHtml += `<div class="sd3n-info-subtitle">Network statistics</div>`;
-      panelHtml += `<div class="sd3n-info-row"><span class="sd3n-info-label">Nodes</span><span class="sd3n-info-value">${nodes.length}</span></div>`;
-      panelHtml += `<div class="sd3n-info-row"><span class="sd3n-info-label">Edges</span><span class="sd3n-info-value">${links.length}</span></div>`;
-      panelHtml += `<div class="sd3n-info-row"><span class="sd3n-info-label">Zones</span><span class="sd3n-info-value">${nZonesUsed}</span></div>`;
-      panelHtml += `<div class="sd3n-info-row"><span class="sd3n-info-label">Types</span><span class="sd3n-info-value">${nTypes}</span></div>`;
-      panelHtml += `<div class="sd3n-info-row"><span class="sd3n-info-label">Components</span><span class="sd3n-info-value">${numComponents}</span></div>`;
-      panelHtml += `<div class="sd3n-info-row"><span class="sd3n-info-label">Avg degree</span><span class="sd3n-info-value">${avgDegree}</span></div>`;
-      panelHtml += `<div class="sd3n-info-row"><span class="sd3n-info-label">Max degree</span><span class="sd3n-info-value">${maxDegree}${maxDegreeNode ? " (" + shortLabel(maxDegreeNode.label, 12) + ")" : ""}</span></div>`;
-      panelHtml += `<div class="sd3n-info-row"><span class="sd3n-info-label">Density</span><span class="sd3n-info-value">${density}</span></div>`;
+      panelHtml += `<div class="sd3n-info-title">${t.graphSummary}</div>`;
+      panelHtml += `<div class="sd3n-info-subtitle">${t.networkStats}</div>`;
+      panelHtml += `<div class="sd3n-info-row"><span class="sd3n-info-label">${t.nodes[0].toUpperCase() + t.nodes.slice(1)}</span><span class="sd3n-info-value">${nodes.length}</span></div>`;
+      panelHtml += `<div class="sd3n-info-row"><span class="sd3n-info-label">${t.edges[0].toUpperCase() + t.edges.slice(1)}</span><span class="sd3n-info-value">${links.length}</span></div>`;
+      panelHtml += `<div class="sd3n-info-row"><span class="sd3n-info-label">${t.zones}</span><span class="sd3n-info-value">${nZonesUsed}</span></div>`;
+      panelHtml += `<div class="sd3n-info-row"><span class="sd3n-info-label">${t.types}</span><span class="sd3n-info-value">${nTypes}</span></div>`;
+      panelHtml += `<div class="sd3n-info-row"><span class="sd3n-info-label">${t.components}</span><span class="sd3n-info-value">${numComponents}</span></div>`;
+      panelHtml += `<div class="sd3n-info-row"><span class="sd3n-info-label">${t.avgDegree}</span><span class="sd3n-info-value">${avgDegree}</span></div>`;
+      panelHtml += `<div class="sd3n-info-row"><span class="sd3n-info-label">${t.maxDegree}</span><span class="sd3n-info-value">${maxDegree}${maxDegreeNode ? " (" + shortLabel(maxDegreeNode.label, 12) + ")" : ""}</span></div>`;
+      panelHtml += `<div class="sd3n-info-row"><span class="sd3n-info-label">${t.density}</span><span class="sd3n-info-value">${density}</span></div>`;
       if (diameter > 0) {
-        panelHtml += `<div class="sd3n-info-row"><span class="sd3n-info-label">Diameter</span><span class="sd3n-info-value">${diameter}</span></div>`;
+        panelHtml += `<div class="sd3n-info-row"><span class="sd3n-info-label">${t.diameter}</span><span class="sd3n-info-value">${diameter}</span></div>`;
       }
       if (isolatedCount > 0) {
-        panelHtml += `<div class="sd3n-info-row"><span class="sd3n-info-label">Isolated</span><span class="sd3n-info-value">${isolatedCount}</span></div>`;
+        panelHtml += `<div class="sd3n-info-row"><span class="sd3n-info-label">${t.isolated}</span><span class="sd3n-info-value">${isolatedCount}</span></div>`;
       }
 
       // Average clustering coefficient
@@ -3679,7 +3721,7 @@ export default function (component) {
         ccCount++;
       });
       const avgCC = ccCount > 0 ? (totalCC / ccCount).toFixed(3) : "N/A";
-      panelHtml += `<div class="sd3n-info-row"><span class="sd3n-info-label">Avg clustering</span><span class="sd3n-info-value">${avgCC}</span></div>`;
+      panelHtml += `<div class="sd3n-info-row"><span class="sd3n-info-label">${t.avgClustering}</span><span class="sd3n-info-value">${avgCC}</span></div>`;
 
       // Degree distribution mini histogram
       const degreeFreq = {};
@@ -3688,7 +3730,7 @@ export default function (component) {
       const sortedDegrees = Object.keys(degreeFreq).map(Number).sort((a, b) => a - b);
       if (sortedDegrees.length > 1) {
         panelHtml += `<div style="margin-top:8px;padding-top:6px;border-top:1px solid var(--sd3n-border)">`;
-        panelHtml += `<div style="font-size:0.6875rem;font-weight:600;color:var(--sd3n-text-muted);text-transform:uppercase;letter-spacing:0.03em;margin-bottom:4px">Degree distribution</div>`;
+        panelHtml += `<div style="font-size:0.6875rem;font-weight:600;color:var(--sd3n-text-muted);text-transform:uppercase;letter-spacing:0.03em;margin-bottom:4px">${t.degreeDistribution}</div>`;
         panelHtml += `<div style="display:flex;gap:1px;align-items:end;height:32px">`;
         sortedDegrees.forEach((deg) => {
           const h = Math.max(2, (degreeFreq[deg] / maxFreq) * 28);
@@ -3728,7 +3770,7 @@ export default function (component) {
           pieLegend += `<div style="display:flex;align-items:center;gap:4px;font-size:0.625rem"><span style="width:8px;height:8px;border-radius:50%;background:${z.color};flex-shrink:0"></span>${z.label || z.name}: ${count}</div>`;
         });
         panelHtml += `<div style="margin-top:8px;padding-top:6px;border-top:1px solid var(--sd3n-border)">`;
-        panelHtml += `<div style="font-size:0.6875rem;font-weight:600;color:var(--sd3n-text-muted);text-transform:uppercase;letter-spacing:0.03em;margin-bottom:4px">Zone breakdown</div>`;
+        panelHtml += `<div style="font-size:0.6875rem;font-weight:600;color:var(--sd3n-text-muted);text-transform:uppercase;letter-spacing:0.03em;margin-bottom:4px">${t.zoneBreakdown}</div>`;
         panelHtml += `<div style="display:flex;gap:12px;align-items:center">`;
         panelHtml += `<svg width="72" height="72" viewBox="0 0 72 72">${piePaths}</svg>`;
         panelHtml += `<div style="display:flex;flex-direction:column;gap:2px">${pieLegend}</div>`;
@@ -3925,13 +3967,13 @@ export default function (component) {
                   return true;
                 });
                 linkLabelSel.classed("dimmed", true);
-                showToast(`Shortest path: ${path.length - 1} hop${path.length > 2 ? "s" : ""}`);
+                showToast(`${t.shortestPath}: ${path.length - 1} ${path.length > 2 ? t.hops : t.hop}`);
                 // Animate a glowing particle along the path
                 animatePathParticle(path);
                 // Show path in info panel
                 let panelHtml = `<button class="sd3n-info-close">&times;</button>`;
-                panelHtml += `<div class="sd3n-info-title">Shortest path</div>`;
-                panelHtml += `<div class="sd3n-info-subtitle">${path.length - 1} hop${path.length > 2 ? "s" : ""}</div>`;
+                panelHtml += `<div class="sd3n-info-title">${t.shortestPath}</div>`;
+                panelHtml += `<div class="sd3n-info-subtitle">${path.length - 1} ${path.length > 2 ? t.hops : t.hop}</div>`;
                 path.forEach((id, i) => {
                   const n = nodeMap[id];
                   if (!n) return;
@@ -3952,7 +3994,7 @@ export default function (component) {
                   });
                 });
               } else {
-                showToast("No path found");
+                showToast(t.noPathFound);
               }
             }
           } else if (action === "pin") {
@@ -4050,10 +4092,10 @@ export default function (component) {
         });
       }
       menuHtml += `<div class="sd3n-context-menu-sep"></div>`;
-      menuHtml += `<button class="sd3n-context-menu-item" data-bg-ctx="scale-degree">${_scaledByDegree ? "Reset" : "Scale"} nodes by degree</button>`;
+      menuHtml += `<button class="sd3n-context-menu-item" data-bg-ctx="scale-degree">${_scaledByDegree ? t.resetScale : t.scaleByDegree}</button>`;
       menuHtml += `<div class="sd3n-context-menu-sep"></div>`;
-      menuHtml += `<button class="sd3n-context-menu-item" data-bg-ctx="export-json">Export as JSON</button>`;
-      menuHtml += `<button class="sd3n-context-menu-item" data-bg-ctx="stats">Graph statistics</button>`;
+      menuHtml += `<button class="sd3n-context-menu-item" data-bg-ctx="export-json">${t.exportJson}</button>`;
+      menuHtml += `<button class="sd3n-context-menu-item" data-bg-ctx="stats">${t.graphStats}</button>`;
 
       contextMenu.innerHTML = menuHtml;
       contextMenu.style.left = x + "px";
@@ -4287,8 +4329,8 @@ export default function (component) {
       // Show summary in info panel
       const selNodes = [...selectedIds].map((id) => nodeMap[id]).filter(Boolean);
       let panelHtml = `<button class="sd3n-info-close">&times;</button>`;
-      panelHtml += `<div class="sd3n-info-title">${selNodes.length} nodes selected</div>`;
-      panelHtml += `<div class="sd3n-info-subtitle">Lasso selection</div>`;
+      panelHtml += `<div class="sd3n-info-title">${selNodes.length} ${t.nodesSelected}</div>`;
+      panelHtml += `<div class="sd3n-info-subtitle">${t.lassoSelection}</div>`;
       selNodes.forEach((n) => {
         panelHtml += `<div class="sd3n-info-row"><span class="sd3n-info-label" style="cursor:pointer" data-goto="${n.id}">${n.label}</span><span class="sd3n-info-value" style="font-size:0.6875rem;opacity:0.5">${n.type}</span></div>`;
       });
