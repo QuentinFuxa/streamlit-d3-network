@@ -8,6 +8,14 @@ Build rich, explorable network visualizations with zone clustering, multiple nod
 ![Streamlit 1.51+](https://img.shields.io/badge/streamlit-1.51+-FF4B4B.svg)
 ![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)
 
+**[Try the live demo](https://d3-network.streamlit.app/)**
+
+![Architecture view](assets/architecture.png)
+
+![Attention sink — hierarchical layout](assets/attention-sink.png)
+
+![READ/WRITE timeline](assets/timeline.png)
+
 ## Installation
 
 ```bash
