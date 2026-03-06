@@ -36,9 +36,9 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/quentin/streamlit-d3-network"
-Repository = "https://github.com/quentin/streamlit-d3-network"
-Issues = "https://github.com/quentin/streamlit-d3-network/issues"
+Homepage = "https://github.com/QuentinFuxa/streamlit-d3-network"
+Repository = "https://github.com/QuentinFuxa/streamlit-d3-network"
+Issues = "https://github.com/QuentinFuxa/streamlit-d3-network/issues"
 
 [tool.setuptools.packages.find]
 where = ["src"]

@@ -246,7 +246,7 @@ Enable export buttons with `show_export=True` to allow users to download the gra
 ## Development
 
 ```bash
-git clone https://github.com/quentin/streamlit-d3-network.git
+git clone https://github.com/QuentinFuxa/streamlit-d3-network.git
 cd streamlit-d3-network
 pip install -e .
 streamlit run examples/demo.py

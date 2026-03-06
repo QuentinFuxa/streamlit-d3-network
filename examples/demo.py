@@ -799,5 +799,5 @@ st.markdown("""
 | **Result** | State-of-the-art simultaneous translation quality with competitive latency on MuST-C en-de |
 
 ---
-*Built with [streamlit-d3-network](https://github.com/quentin/streamlit-d3-network) --- Interactive D3.js network graphs for Streamlit.*
+*Built with [streamlit-d3-network](https://github.com/QuentinFuxa/streamlit-d3-network) --- Interactive D3.js network graphs for Streamlit.*
 """)
