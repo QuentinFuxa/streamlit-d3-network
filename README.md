@@ -1,14 +1,13 @@
-# streamlit-d3-network
+# Streamlit D3 Network
 
-Interactive D3.js network graph component for [Streamlit](https://streamlit.io/).
-
-Build rich, explorable network visualizations with zone clustering, multiple node shapes, real-time search, keyboard navigation, and bidirectional Python-JS state.
+Interactive D3.js network graph component for [Streamlit](https://streamlit.io/). 
+**Rich & explorable network visualizations with bidirectional Python-JS state.**
 
 ![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)
 ![Streamlit 1.51+](https://img.shields.io/badge/streamlit-1.51+-FF4B4B.svg)
 ![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)
 
-**[Try the live demo](https://d3-network.streamlit.app/)**
+**[Try the live demo](https://d3-network.streamlit.app/) to understand with beautiful graphs the strategies used in Simultaneous Streaming and Translation** 
 
 <p align="center">
 <img src="assets/architecture.png" alt="Architecture view" width="600">
