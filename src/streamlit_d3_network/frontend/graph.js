@@ -1400,7 +1400,7 @@ export default function (component) {
         .data(hullData, (d) => d.zone)
         .join("path")
         .attr("class", "sd3n-hull")
-        .attr("d", (d) => "M" + d.hull.map((p) => p.join(",")).join("L") + "Z")
+        .attr("d", (d) => d3.line().curve(d3.curveCatmullRomClosed.alpha(0.5))(d.hull))
         .attr("fill", (d) => d.color)
         .attr("fill-opacity", 0.08)
         .attr("stroke", (d) => darkenColor(d.color, 0.2))

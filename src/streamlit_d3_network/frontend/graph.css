@@ -418,6 +418,8 @@
 .sd3n-hull {
   stroke-width: 1.5;
   stroke-dasharray: 6, 3;
+  stroke-linejoin: round;
+  stroke-linecap: round;
   pointer-events: none;
 }
 .sd3n-zone-label {
