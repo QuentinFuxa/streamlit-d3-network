@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "streamlit-d3-network"
-version = "0.1.0"
+version = "0.1.4"
 description = "Interactive D3.js network graph component for Streamlit with zone-clustered force layout, bidirectional state, and agent integration."
 readme = "README.md"
 license = "MIT"
