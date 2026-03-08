@@ -1,13 +1,6 @@
 # Streamlit D3 Network
+**Rich & explorable network visualizations with bidirectional Python-JS state for Streamlit. **[Try the live demo here](https://d3-network.streamlit.app/)  !**
 
-Interactive D3.js network graph component for [Streamlit](https://streamlit.io/). 
-**Rich & explorable network visualizations with bidirectional Python-JS state.**
-
-![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)
-![Streamlit 1.51+](https://img.shields.io/badge/streamlit-1.51+-FF4B4B.svg)
-![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)
-
-**[Try the live demo](https://d3-network.streamlit.app/) to understand with beautiful graphs the strategies used in Simultaneous Streaming and Translation** 
 
 https://github.com/user-attachments/assets/bb604f12-3417-4c3d-8c35-c8581765e199
 
