@@ -9,15 +9,7 @@ Interactive D3.js network graph component for [Streamlit](https://streamlit.io/)
 
 **[Try the live demo](https://d3-network.streamlit.app/) to understand with beautiful graphs the strategies used in Simultaneous Streaming and Translation** 
 
-<p align="center">
-<img src="assets/architecture.png" alt="Architecture view" width="600">
-</p>
-<p align="center">
-<img src="assets/attention-sink.png" alt="Attention sink — hierarchical layout" width="600">
-</p>
-<p align="center">
-<img src="assets/timeline.png" alt="READ/WRITE timeline" width="600">
-</p>
+https://github.com/user-attachments/assets/bb604f12-3417-4c3d-8c35-c8581765e199
 
 ## Installation
 
