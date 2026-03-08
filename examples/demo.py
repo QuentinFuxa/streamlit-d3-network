@@ -292,7 +292,7 @@ with tab1:
         show_particles=True,
         show_legend=True,
         show_search=False,
-        layout="force",
+        layout="hierarchical",
         height=600,
         key="arch_graph",
     )
@@ -433,7 +433,7 @@ with tab2:
         show_particles=True,
         show_legend=True,
         show_search=False,
-        layout="force",
+        layout="hierarchical",
         height=550,
         key="attn_bipartite",
     )

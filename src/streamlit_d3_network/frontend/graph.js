@@ -385,8 +385,27 @@ export default function (component) {
     }
 
     const root = document.createElement("div");
-    // Use theme from Python options if provided, otherwise default to light
-    const isDark = opts.dark === true;
+    // Auto-detect dark mode: check Streamlit's data-testid body theme, or walk up
+    // parent chain looking for dark backgrounds, or fall back to prefers-color-scheme
+    function detectDarkMode() {
+      // 1. Check Streamlit's theme via the closest stApp element or body attribute
+      try {
+        const stApp = document.querySelector('[data-testid="stAppViewContainer"]') || document.querySelector(".stApp");
+        if (stApp) {
+          const bg = window.getComputedStyle(stApp).backgroundColor;
+          if (bg && bg !== "rgba(0, 0, 0, 0)") {
+            const m = bg.match(/\d+/g);
+            if (m) {
+              const lum = (0.299 * +m[0] + 0.587 * +m[1] + 0.114 * +m[2]) / 255;
+              return lum < 0.5;
+            }
+          }
+        }
+      } catch (e) { /* ignore */ }
+      // 2. Check prefers-color-scheme
+      return window.matchMedia?.("(prefers-color-scheme: dark)")?.matches || false;
+    }
+    const isDark = opts.dark != null ? opts.dark === true : detectDarkMode();
     root.className = "sd3n-root" + (isDark ? " sd3n-dark" : " sd3n-light");
     // Set explicit height — prefer Python-provided height, then host, then fallback
     const explicitH = data._height || host.clientHeight || host.offsetHeight || 600;
@@ -396,6 +415,19 @@ export default function (component) {
     Object.entries(theme).forEach(([key, value]) => {
       root.style.setProperty(`--sd3n-${key}`, value);
     });
+    // Auto-detect Streamlit primary color and use as accent (unless overridden by theme)
+    if (!theme.accent) {
+      try {
+        const stPrimary = getComputedStyle(document.documentElement).getPropertyValue("--primary-color").trim();
+        if (stPrimary) {
+          root.style.setProperty("--sd3n-accent", stPrimary);
+          // Build a soft version (12% opacity)
+          root.style.setProperty("--sd3n-accent-soft", stPrimary.startsWith("#")
+            ? stPrimary + "1F"
+            : stPrimary.replace("rgb(", "rgba(").replace(")", ", 0.12)"));
+        }
+      } catch (e) { /* ignore */ }
+    }
     parentElement.appendChild(root);
 
     // Tooltip
@@ -405,16 +437,42 @@ export default function (component) {
 
     function positionTooltip(e) {
       const rect = root.getBoundingClientRect();
-      let x = e.clientX - rect.left + 12;
-      let y = e.clientY - rect.top - 10;
-      // Keep tooltip on-screen
       const tw = tooltip.offsetWidth || 200;
       const th = tooltip.offsetHeight || 60;
-      if (x + tw > rect.width - 10) x = e.clientX - rect.left - tw - 12;
+      const cx = e.clientX - rect.left;
+      const cy = e.clientY - rect.top;
+
+      let x, y, tipClass;
+
+      // Preferred: tooltip above cursor
+      if (cy - th - 16 > 10) {
+        x = cx - tw / 2;
+        y = cy - th - 16;
+        tipClass = "sd3n-tip-above";
+      }
+      // Fallback: tooltip below cursor
+      else if (cy + th + 16 < rect.height - 10) {
+        x = cx - tw / 2;
+        y = cy + 16;
+        tipClass = "sd3n-tip-below";
+      }
+      // Last resort: tooltip to the left
+      else {
+        x = cx - tw - 16;
+        y = cy - th / 2;
+        tipClass = "sd3n-tip-left";
+      }
+
+      // Clamp horizontal
+      if (x + tw > rect.width - 10) x = rect.width - tw - 10;
+      if (x < 10) x = 10;
+      // Clamp vertical
       if (y + th > rect.height - 10) y = rect.height - th - 10;
       if (y < 10) y = 10;
+
       tooltip.style.left = x + "px";
       tooltip.style.top = y + "px";
+      tooltip.className = "sd3n-tooltip " + tipClass;
     }
 
     // Search box
@@ -499,6 +557,32 @@ export default function (component) {
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
       </button>
     `;
+    // Filter toolbar buttons if toolbarButtons option is set
+    const toolbarButtons = opts.toolbarButtons;
+    if (toolbarButtons && Array.isArray(toolbarButtons)) {
+      const btnMap = {
+        "theme": ".sd3n-theme-btn",
+        "fullscreen": ".sd3n-fullscreen-btn",
+        "collapse": ".sd3n-collapse-btn",
+        "heatmap": ".sd3n-heatmap-btn",
+        "fit": ".sd3n-fit-btn",
+        "center": ".sd3n-center-btn",
+        "reset": ".sd3n-reset-btn",
+        "zoomin": ".sd3n-zin-btn",
+        "zoomout": ".sd3n-zout-btn",
+        "layout": ".sd3n-layout-select",
+        "tuning": ".sd3n-tuning-btn",
+        "snap": ".sd3n-snap-btn",
+        "bookmark": ".sd3n-bookmark-btn",
+        "path": ".sd3n-path-mode-btn",
+        "status": ".sd3n-status-filter-btn",
+        "help": ".sd3n-help-btn",
+      };
+      Object.entries(btnMap).forEach(([key, sel]) => {
+        const el = toolbar.querySelector(sel);
+        if (el && !toolbarButtons.includes(key)) el.style.display = "none";
+      });
+    }
     root.appendChild(toolbar);
 
     // Info panel
@@ -879,7 +963,7 @@ export default function (component) {
           })
       )
       .force("charge", d3.forceManyBody().strength(-200).distanceMax(400))
-      .force("collision", d3.forceCollide().radius((d) => (d.radius || 20) + 8))
+      .force("collision", d3.forceCollide().radius((d) => (d.radius || 20) + 30))
       .force(
         "x",
         d3
@@ -1380,17 +1464,25 @@ export default function (component) {
       zoneKeys.forEach((z) => {
         const zNodes = nodes.filter((n) => n.zone === z);
         if (zNodes.length < 2) return;
-        const pts = zNodes.map((n) => [n.x, n.y]);
+        // Generate points around each node (N/S/E/W at radius + padding)
+        // so hulls have proper volume even when nodes are collinear
+        const hullPad = 30;
+        const pts = [];
+        zNodes.forEach((n) => {
+          const r = (n.radius || 20) + hullPad;
+          pts.push([n.x - r, n.y], [n.x + r, n.y], [n.x, n.y - r], [n.x, n.y + r]);
+        });
         let hull = d3.polygonHull(pts);
         if (!hull) return;
-        hull = expandHull(hull, 30);
-        // Clamp to zone rect
-        const zr = zoneRects[z];
-        if (zr) {
-          hull = hull.map(([x, y]) => [
-            Math.max(zr.x, Math.min(zr.x + zr.w, x)),
-            Math.max(zr.y, Math.min(zr.y + zr.h, y)),
-          ]);
+        // Clamp to zone rect (only in force layout where zones have fixed rects)
+        if (_currentLayout === "force") {
+          const zr = zoneRects[z];
+          if (zr) {
+            hull = hull.map(([x, y]) => [
+              Math.max(zr.x, Math.min(zr.x + zr.w, x)),
+              Math.max(zr.y, Math.min(zr.y + zr.h, y)),
+            ]);
+          }
         }
         hullData.push({ zone: z, hull, color: zoneColorMap[z] || "#e9ecef" });
       });
@@ -1576,28 +1668,43 @@ export default function (component) {
     const drag = d3
       .drag()
       .on("start", (e, d) => {
-        if (!e.active) simulation.alphaTarget(0.1).restart();
         _dragStartPos = { x: d.x, y: d.y };
-        d.fx = d.x;
-        d.fy = d.y;
+        if (_currentLayout === "force") {
+          if (!e.active) simulation.alphaTarget(0.1).restart();
+          d.fx = d.x;
+          d.fy = d.y;
+        }
       })
       .on("drag", (e, d) => {
         let x = e.x,
           y = e.y;
-        // Clamp to zone (only in force layout)
         if (_currentLayout === "force") {
+          // Clamp to zone rect in force layout
           const zr = zoneRects[d.zone];
           if (zr) {
             const pad = (d.radius || 20) + 5;
             x = Math.max(zr.x + pad, Math.min(zr.x + zr.w - pad, x));
             y = Math.max(zr.y + pad, Math.min(zr.y + zr.h - pad, y));
           }
+          d.fx = x;
+          d.fy = y;
+        } else {
+          // Non-force: move node directly (no simulation restart)
+          d.x = x;
+          d.y = y;
+          nodeSel.filter((n) => n.id === d.id)
+            .attr("transform", `translate(${x},${y})`);
+          linkSel.attr("d", linkPath);
+          linkLabelSel
+            .attr("x", (l) => linkMidpoint(l).x)
+            .attr("y", (l) => linkMidpoint(l).y - 4);
+          if (showHulls) updateHulls();
         }
-        d.fx = x;
-        d.fy = y;
       })
       .on("end", (e, d) => {
-        if (!e.active) simulation.alphaTarget(0);
+        if (_currentLayout === "force") {
+          if (!e.active) simulation.alphaTarget(0);
+        }
         // Save undo state
         if (_dragStartPos && (Math.abs(d.x - _dragStartPos.x) > 2 || Math.abs(d.y - _dragStartPos.y) > 2)) {
           pushUndo(d.id, _dragStartPos.x, _dragStartPos.y, d.x, d.y);
@@ -2570,7 +2677,7 @@ export default function (component) {
       <div class="sd3n-tuning-title">Force Tuning</div>
       <label>Charge <input type="range" class="sd3n-tune-charge" min="-600" max="0" value="-200" step="10"><span class="sd3n-tune-val">-200</span></label>
       <label>Distance <input type="range" class="sd3n-tune-dist" min="20" max="300" value="80" step="5"><span class="sd3n-tune-val">80</span></label>
-      <label>Collision <input type="range" class="sd3n-tune-coll" min="0" max="50" value="8" step="1"><span class="sd3n-tune-val">8</span></label>
+      <label>Collision <input type="range" class="sd3n-tune-coll" min="0" max="50" value="30" step="1"><span class="sd3n-tune-val">30</span></label>
       <label>X gravity <input type="range" class="sd3n-tune-gx" min="0" max="0.3" value="0.08" step="0.01"><span class="sd3n-tune-val">0.08</span></label>
       <label>Y gravity <input type="range" class="sd3n-tune-gy" min="0" max="0.3" value="0.08" step="0.01"><span class="sd3n-tune-val">0.08</span></label>
       <button class="sd3n-btn" style="margin-top:4px;width:100%;justify-content:center" data-tune-reset>Reset defaults</button>
@@ -2618,7 +2725,7 @@ export default function (component) {
     const tuneResetBtn = tuningPanel.querySelector("[data-tune-reset]");
     if (tuneResetBtn) {
       tuneResetBtn.addEventListener("click", () => {
-        const defaults = { charge: -200, dist: 80, coll: 8, gx: 0.08, gy: 0.08 };
+        const defaults = { charge: -200, dist: 80, coll: 30, gx: 0.08, gy: 0.08 };
         tuningPanel.querySelector(".sd3n-tune-charge").value = defaults.charge;
         tuningPanel.querySelector(".sd3n-tune-dist").value = defaults.dist;
         tuningPanel.querySelector(".sd3n-tune-coll").value = defaults.coll;
